@@ -1414,76 +1414,7 @@ test("ⅣⅡ = []", {
   }
 });
 
-test("ⅣⅡ = []", {
-  type: "Program",
-  body: [
-    {
-      type: "ExpressionStatement",
-      expression: {
-        type: "AssignmentExpression",
-        operator: "=",
-        left: {
-          type: "Identifier",
-          name: "ⅣⅡ",
-          loc: {
-            start: {
-              line: 1,
-              column: 0
-            },
-            end: {
-              line: 1,
-              column: 2
-            }
-          }
-        },
-        right: {
-          type: "ArrayExpression",
-          elements: [],
-          loc: {
-            start: {
-              line: 1,
-              column: 5
-            },
-            end: {
-              line: 1,
-              column: 7
-            }
-          }
-        },
-        loc: {
-          start: {
-            line: 1,
-            column: 0
-          },
-          end: {
-            line: 1,
-            column: 7
-          }
-        }
-      },
-      loc: {
-        start: {
-          line: 1,
-          column: 0
-        },
-        end: {
-          line: 1,
-          column: 7
-        }
-      }
-    }
-  ],
-  loc: {
-    start: {
-      line: 1,
-      column: 0
-    },
-    end: {
-      line: 1,
-      column: 7
-    }
-  }
-});
+
 
 test("x = {}", {
   type: "Program",
@@ -26665,26 +26596,6 @@ test("123.+2", {
   ]
 });
 
-test("a\u2028b", {
-  type: "Program",
-  body: [
-    {
-      type: "ExpressionStatement",
-      expression: {
-        type: "Identifier",
-        name: "a"
-      }
-    },
-    {
-      type: "ExpressionStatement",
-      expression: {
-        type: "Identifier",
-        name: "b"
-      }
-    }
-  ]
-});
-
 test("'a\\u0026b'", {
   type: "Program",
   body: [
@@ -27284,8 +27195,6 @@ testFail("with(x)",
 testFail("try { }",
          "Missing catch or finally clause (1:0)");
 
-testFail("‿ = 10",
-         "Unexpected character '‿' (1:0)");
 
 testFail("if(true) let a = 1;",
          "Unexpected token (1:13)");
@@ -27359,11 +27268,6 @@ testFail("\\x",
 testFail("\\u0000",
          "Invalid Unicode escape (1:0)");
 
-testFail("‌ = []",
-         "Unexpected character '‌' (1:0)");
-
-testFail("‍ = []",
-         "Unexpected character '‍' (1:0)");
 
 testFail("\"\\",
          "Unterminated string constant (1:0)");
