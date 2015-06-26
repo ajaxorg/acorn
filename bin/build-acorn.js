@@ -7,11 +7,13 @@ var babelify = require("babelify").configure({loose: "all"})
 
 process.chdir(path.resolve(__dirname, ".."))
 
-browserify({standalone: "acorn"})
+browserify({standalone: "acorn", exposeAll: true, pack: function() {console.trace(); console.log.apply(console, arguments)}})
   .plugin(require('browserify-derequire'))
+  .plugin(require('deps-sort'))
   .transform(babelify)
   .require("./src/index.js", {entry: true})
   .bundle()
+  .pipe(acornShimComplete(true))
   .on("error", function (err) { console.log("Error: " + err.message) })
   .pipe(fs.createWriteStream("dist/acorn.js"))
 
@@ -33,7 +35,7 @@ function acornShimPrepare(file) {
   }
   return tr
 }
-function acornShimComplete() {
+function acornShimComplete(core) {
   var tr = new stream.Transform
   var buffer = "";
   tr._transform = function(chunk, _, callback) {
@@ -41,15 +43,20 @@ function acornShimComplete() {
     callback();
   };
   tr._flush = function (callback) {
+    buffer = buffer.replace(/^\s*_classCallCheck\(this, \w+\);/gm, "")
+    buffer = 'define(["require", "exports", "module"' + (core ? '' : ', "./acorn"') +'], function(require, exports, module) {\n\n'
+      + buffer
+      + '\n});'
     tr.push(buffer.replace(ACORN_PLACEHOLDER, "module.exports = typeof acorn != 'undefined' ? acorn : require(\"./acorn\")"));
     callback(null);
   };
   return tr;
 }
 
-browserify({standalone: "acorn.loose"})
+browserify({standalone: "acorn.loose", exposeAll: true})
   .plugin(require('browserify-derequire'))
   .transform(acornShimPrepare)
+  .plugin(require('deps-sort'))
   .transform(babelify)
   .require("./src/loose/index.js", {entry: true})
   .bundle()
@@ -57,9 +64,10 @@ browserify({standalone: "acorn.loose"})
   .pipe(acornShimComplete())
   .pipe(fs.createWriteStream("dist/acorn_loose.js"))
 
-browserify({standalone: "acorn.walk"})
+browserify({standalone: "acorn.walk", exposeAll: true})
   .plugin(require('browserify-derequire'))
   .transform(acornShimPrepare)
+  .plugin(require('deps-sort'))
   .transform(babelify)
   .require("./src/walk/index.js", {entry: true})
   .bundle()
