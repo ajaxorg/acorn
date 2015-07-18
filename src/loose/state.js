@@ -134,9 +134,10 @@ export class LooseParser {
 
   closes(closeTok, indent, line, blockHeuristic) {
     if (this.tok.type === closeTok || this.tok.type === tt.eof) return true
+    /* TODO reenable indent based recovery 
     return line != this.curLineStart && this.curIndent < indent && this.tokenStartsLine() &&
       (!blockHeuristic || this.nextLineStart >= this.input.length ||
-       this.indentationAfter(this.nextLineStart) < indent)
+       this.indentationAfter(this.nextLineStart) < indent)*/
   }
 
   tokenStartsLine() {
