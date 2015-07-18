@@ -37,9 +37,9 @@ export const defaultOptions = {
   allowHashBang: false,
   // When `locations` is on, `loc` properties holding objects with
   // `start` and `end` properties in `{line, column}` form (with
-  // line being 1-based and column 0-based) will be attached to the
+  // line being 0-based and column 0-based) will be attached to the
   // nodes.
-  locations: false,
+  locations: true,
   // A function can be passed as `onToken` option, which will
   // cause Acorn to call that function with object in the same
   // format as tokens returned from `tokenizer().getToken()`. Note

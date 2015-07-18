@@ -16,6 +16,24 @@
 
     for (var i = 0; i < tests.length; ++i) {
       var test = tests[i];
+      if (!test.$updated) {
+        if (test.error) {
+          test.error = test.error.replace(/\((\d+):(\d+)\)/, function(_, line, col) {
+            return "(" + (parseInt(line) - 1) + ":" + col + ")";
+          })
+        }
+        test.$updated = true;
+        function walk(o, fn) {
+            if (typeof o != "object" || !o) return;
+            if (Array.isArray(o)) o.forEach(function(o1, i) { fn(i, o1) && walk(o1, fn) });
+            else Object.keys(o).forEach(function(x) { fn(x, o[x]) && walk(o[x], fn)} )
+        }
+        walk(test, function(a, b) {
+          if (a !== "loc") return true;
+          if (b.start && b.start.line) b.start.line--;
+          if (b.end && b.end.line) b.end.line--;
+        });
+      }
       if (config.filter && !config.filter(test)) continue;
       var testOpts = test.options || {locations: true};
       if (!testOpts.ecmaVersion) testOpts.ecmaVersion = 5;

@@ -40,7 +40,7 @@ export class Parser {
       this.curLine = this.input.slice(0, this.lineStart).split(lineBreak).length
     } else {
       this.pos = this.lineStart = 0
-      this.curLine = 1
+      this.curLine = 0
     }
 
     // Properties of the current token:
