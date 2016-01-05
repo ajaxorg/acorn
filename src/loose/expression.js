@@ -208,6 +208,17 @@ lp.parseExprAtom = function() {
     return this.finishNode(node, type)
 
   case tt.name:
+    // quick hack to allow async and await
+    if (this.value == "async" && /^[ \t]*(function\b|\(|\w+[ \t]*=>)/.test(this.input.slice(this.tok.end))) {
+      node = this.startNode();
+      this.next();
+      return this.parseExprAtom();
+    }
+    if (this.tok.value == "await" && /^[ \t]+[\w\x1f-\uffff]/.test(this.input.slice(this.tok.end))) {
+      node = this.startNode();
+      this.next();
+      return this.parseExprAtom();
+    }
     let start = this.storeCurrentPos()
     let id = this.parseIdent()
     return this.eat(tt.arrow) ? this.parseArrowExpression(this.startNodeAt(start), [id]) : id

@@ -271,6 +271,18 @@ pp.parseExprAtom = function(refDestructuringErrors) {
     return this.finishNode(node, type)
 
   case tt.name:
+    // quick hack to allow async and await
+    if (this.value == "async" && /^[ \t]*(function\b|\(|\w+[ \t]*=>)/.test(this.input.slice(this.end))) {
+      node = this.startNode();
+      this.next();
+      return this.parseExprAtom(refDestructuringErrors);
+    }    
+    if (this.value == "await" && /^[ \t]+[\w\x1f-\uffff]/.test(this.input.slice(this.end))) {
+      node = this.startNode();
+      this.next();
+      return this.parseExprAtom(refDestructuringErrors);
+    }
+    
     let startPos = this.start, startLoc = this.startLoc
     let id = this.parseIdent(this.type !== tt.name)
     if (canBeArrow && !this.canInsertSemicolon() && this.eat(tt.arrow))
