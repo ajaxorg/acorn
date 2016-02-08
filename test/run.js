@@ -2,6 +2,7 @@
   var driver, acorn;
 
   if (typeof require !== "undefined") {
+    require("amd-loader");
     driver = require("./driver.js");
     require("./tests.js");
     require("./tests-harmony.js");

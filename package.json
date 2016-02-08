@@ -38,5 +38,8 @@
     "browserify-derequire": "^0.9.4",
     "deps-sort": "^1.3.9",
     "unicode-8.0.0": "~0.1.5"
+  },
+  "dependencies": {
+    "amd-loader": "0.0.5"
   }
 }
