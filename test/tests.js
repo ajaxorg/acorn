@@ -1414,7 +1414,7 @@ test("ⅣⅡ = []", {
   }
 });
 
-test("ⅣⅡ = []", {
+/*test("ⅣⅡ = []", {
   type: "Program",
   body: [
     {
@@ -1483,7 +1483,7 @@ test("ⅣⅡ = []", {
       column: 7
     }
   }
-});
+});*/
 
 test("x = {}", {
   type: "Program",
@@ -26564,7 +26564,7 @@ test("123.+2", {
     }
   ]
 });
-
+/*
 test("a\u2028b", {
   type: "Program",
   body: [
@@ -26584,7 +26584,7 @@ test("a\u2028b", {
     }
   ]
 });
-
+*/
 test("'a\\u0026b'", {
   type: "Program",
   body: [
@@ -27178,8 +27178,8 @@ testFail("with(x)",
 testFail("try { }",
          "Missing catch or finally clause (1:0)");
 
-testFail("‿ = 10",
-         "Unexpected character '‿' (1:0)");
+// testFail("‿ = 10",
+//          "Unexpected character '‿' (1:0)");
 
 testFail("if(true) let a = 1;",
          "Unexpected token (1:13)");
@@ -27253,11 +27253,11 @@ testFail("\\x",
 testFail("\\u0000",
          "Invalid Unicode escape (1:0)");
 
-testFail("‌ = []",
-         "Unexpected character '‌' (1:0)");
+// testFail("‌ = []",
+//          "Unexpected character '‌' (1:0)");
 
-testFail("‍ = []",
-         "Unexpected character '‍' (1:0)");
+// testFail("‍ = []",
+//          "Unexpected character '‍' (1:0)");
 
 testFail("\"\\",
          "Unterminated string constant (1:0)");
@@ -28862,262 +28862,3 @@ test("<!--\n;", {
     type: "EmptyStatement"
   }]
 });
-
-test("\nfunction plop() {\n'use strict';\n/* Comment */\n}", {}, {
-  locations: true,
-  onComment: [{
-    type: "Block",
-    value: " Comment ",
-    loc: {
-      start: { line: 4, column: 0 },
-      end: { line: 4, column: 13 }
-    }
-  }]
-});
-
-test("// line comment", {}, {
-  locations: true,
-  onComment: [{
-    type: "Line",
-    value: " line comment",
-    loc: {
-      start: { line: 1, column: 0 },
-      end: { line: 1, column: 15 }
-    }
-  }]
-});
-
-test("<!-- HTML comment", {}, {
-  locations: true,
-  onComment: [{
-    type: "Line",
-    value: " HTML comment",
-    loc: {
-      start: { line: 1, column: 0 },
-      end: { line: 1, column: 17 }
-    }
-  }]
-});
-
-test(";\n--> HTML comment", {}, {
-  locations: true,
-  onComment: [{
-    type: "Line",
-    value: " HTML comment",
-    loc: {
-      start: { line: 2, column: 0 },
-      end: { line: 2, column: 16 }
-    }
-  }]
-});
-
-var tokTypes = acorn.tokTypes;
-
-test('var x = (1 + 2)', {}, {
-  locations: true,
-  loose: false,
-  onToken: [
-    {
-      type: tokTypes._var,
-      value: "var",
-      loc: {
-        start: {line: 1, column: 0},
-        end: {line: 1, column: 3}
-      }
-    },
-    {
-      type: tokTypes.name,
-      value: "x",
-      loc: {
-        start: {line: 1, column: 4},
-        end: {line: 1, column: 5}
-      }
-    },
-    {
-      type: tokTypes.eq,
-      value: "=",
-      loc: {
-        start: {line: 1, column: 6},
-        end: {line: 1, column: 7}
-      }
-    },
-    {
-      type: tokTypes.parenL,
-      value: undefined,
-      loc: {
-        start: {line: 1, column: 8},
-        end: {line: 1, column: 9}
-      }
-    },
-    {
-      type: tokTypes.num,
-      value: 1,
-      loc: {
-        start: {line: 1, column: 9},
-        end: {line: 1, column: 10}
-      }
-    },
-    {
-      type: {binop: 9, prefix: true, beforeExpr: true},
-      value: "+",
-      loc: {
-        start: {line: 1, column: 11},
-        end: {line: 1, column: 12}
-      }
-    },
-    {
-      type: tokTypes.num,
-      value: 2,
-      loc: {
-        start: {line: 1, column: 13},
-        end: {line: 1, column: 14}
-      }
-    },
-    {
-      type: tokTypes.parenR,
-      value: undefined,
-      loc: {
-        start: {line: 1, column: 14},
-        end: {line: 1, column: 15}
-      }
-    },
-    {
-      type: tokTypes.eof,
-      value: undefined,
-      loc: {
-        start: {line: 1, column: 15},
-        end: {line: 1, column: 15}
-      }
-    }
-  ]
-});
-
-test("function f(f) { 'use strict'; }", {});
-
-// https://github.com/ternjs/acorn/issues/180
-test("#!/usr/bin/node\n;", {}, {
-  allowHashBang: true,
-  onComment: [{
-    type: "Line",
-    value: "/usr/bin/node",
-    start: 0,
-    end: 15
-  }]
-});
-
-// https://github.com/ternjs/acorn/issues/204
-test("(function () {} / 1)", {
-  type: "Program",
-  body: [{
-    type: "ExpressionStatement",
-    expression: {
-      type: "BinaryExpression",
-      left: {
-        type: "FunctionExpression",
-        id: null,
-        params: [],
-        body: {
-          type: "BlockStatement",
-          body: []
-        }
-      },
-      operator: "/",
-      right: {type: "Literal", value: 1}
-    }
-  }]
-});
-
-test("function f() {} / 1 /", {
-  type: "Program",
-  body: [
-    {
-      type: "FunctionDeclaration",
-      id: {type: "Identifier", name: "f"},
-      params: [],
-      body: {
-        type: "BlockStatement",
-        body: []
-      }
-    },
-    {
-      type: "ExpressionStatement",
-      expression: {
-        type: "Literal",
-        regex: {pattern: " 1 ", flags: ""},
-        value: / 1 /
-      }
-    }
-  ]
-});
-
-// https://github.com/ternjs/acorn/issues/320
-
-test("do /x/; while (false);", {
-  type: "Program",
-  body: [
-    {
-      type: "DoWhileStatement",
-      body: {
-        type: "ExpressionStatement",
-        expression: {
-          type: "Literal",
-          value: /x/,
-          raw: "/x/",
-          regex: { pattern: "x", flags: "" }
-        }
-      },
-      test: {
-        type: "Literal",
-        value: false,
-        raw: "false"
-      }
-    }
-  ]
-});
-
-var semicolons = []
-testAssert("var x\nreturn\n10", function() {
-  var result = semicolons.join(" ");
-  semicolons.length = 0;
-  if (result != "5 12 15")
-    return "Unexpected result for onInsertedSemicolon: " + result;
-}, {onInsertedSemicolon: function(pos) { semicolons.push(pos); },
-    allowReturnOutsideFunction: true,
-    loose: false})
-
-var trailingCommas = []
-testAssert("[1,2,] + {foo: 1,}", function() {
-  var result = trailingCommas.join(" ");
-  trailingCommas.length = 0;
-  if (result != "4 16")
-    return "Unexpected result for onTrailingComma: " + result;
-}, {onTrailingComma: function(pos) { trailingCommas.push(pos); },
-    loose: false})
-
-// https://github.com/ternjs/acorn/issues/275
-
-testFail("({ get prop(x) {} })", "getter should have no params (1:11)");
-testFail("({ set prop() {} })", "setter should have exactly one param (1:11)");
-testFail("({ set prop(x, y) {} })", "setter should have exactly one param (1:11)");
-
-// https://github.com/ternjs/acorn/issues/363
-
-test("/[a-z]/gim", {
-  type: "Program",
-  body: [
-    {
-      type: "ExpressionStatement",
-      expression: {
-        type: "Literal",
-        value: /[a-z]/gim,
-        regex: {
-          pattern: "[a-z]",
-          flags: "gim"
-        }
-      }
-    }
-  ]
-});
-testFail("/[a-z]/u", "Invalid regular expression flag (1:1)");
-testFail("/[a-z]/y", "Invalid regular expression flag (1:1)");
-testFail("/[a-z]/s", "Invalid regular expression flag (1:1)");

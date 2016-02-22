@@ -104,6 +104,9 @@ pp.parseStatement = function(declaration, topLevel) {
     // simply start parsing an expression, and afterwards, if the
     // next token is a colon and the expression was a simple
     // Identifier node, we switch to interpreting it as a label.
+  case tt.at:
+    this.next()
+    return this.parseExpression()
   default:
     let maybeName = this.value, expr = this.parseExpression()
     if (starttype === tt.name && expr.type === "Identifier" && this.eat(tt.colon))
@@ -454,8 +457,15 @@ pp.parseClass = function(node, isStatement) {
   let hadConstructor = false
   classBody.body = []
   this.expect(tt.braceL)
+  var decorators = []
   while (!this.eat(tt.braceR)) {
     if (this.eat(tt.semi)) continue
+    if (this.type == tt.at) {
+        this.next();
+        var expr = this.parseMaybeAssign(true);
+        decorators.push(expr);
+        continue;
+    }
     let method = this.startNode()
     let isGenerator = this.eat(tt.star)
     let isMaybeStatic = this.type === tt.name && this.value === "static"
@@ -485,6 +495,12 @@ pp.parseClass = function(node, isStatement) {
       }
     }
     this.parseClassMethod(classBody, method, isGenerator)
+    if (decorators.length) {
+      var body = method.value.body.body;
+      if (body)
+        body.unshift.apply(body, decorators);
+      decorators = []
+    }
     if (isGetSet) {
       let paramCount = method.kind === "get" ? 0 : 1
       if (method.value.params.length !== paramCount) {

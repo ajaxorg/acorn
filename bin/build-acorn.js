@@ -13,7 +13,7 @@ browserify({standalone: "acorn", exposeAll: true, pack: function() {console.trac
   .transform(babelify)
   .require("./src/index.js", {entry: true})
   .bundle()
-  .pipe(acornShimComplete(true))
+  .pipe(acornShimComplete(true, "acorn.js"))
   .on("error", function (err) { console.log("Error: " + err.message) })
   .pipe(fs.createWriteStream("dist/acorn.js"))
 
@@ -35,7 +35,7 @@ function acornShimPrepare(file) {
   }
   return tr
 }
-function acornShimComplete(core) {
+function acornShimComplete(core, path) {
   var tr = new stream.Transform
   var buffer = "";
   tr._transform = function(chunk, _, callback) {
@@ -44,10 +44,13 @@ function acornShimComplete(core) {
   };
   tr._flush = function (callback) {
     buffer = buffer.replace(/^\s*_classCallCheck\(this, \w+\);/gm, "")
+
+    tr.push(buffer.replace(ACORN_PLACEHOLDER, "module.exports = typeof acorn != 'undefined' ? acorn : require(\"./acorn\")"));
     buffer = 'define(["require", "exports", "module"' + (core ? '' : ', "./acorn"') +'], function(require, exports, module) {\n\n'
       + buffer
       + '\n});'
-    tr.push(buffer.replace(ACORN_PLACEHOLDER, "module.exports = typeof acorn != 'undefined' ? acorn : require(\"./acorn\")"));
+    if (path)
+      fs.writeFileSync(path, buffer, "utf8");
     callback(null);
   };
   return tr;
@@ -61,7 +64,7 @@ browserify({standalone: "acorn.loose", exposeAll: true})
   .require("./src/loose/index.js", {entry: true})
   .bundle()
   .on("error", function (err) { console.log("Error: " + err.message) })
-  .pipe(acornShimComplete())
+  .pipe(acornShimComplete(null, "acorn_loose.js"))
   .pipe(fs.createWriteStream("dist/acorn_loose.js"))
 
 browserify({standalone: "acorn.walk", exposeAll: true})
@@ -72,7 +75,7 @@ browserify({standalone: "acorn.walk", exposeAll: true})
   .require("./src/walk/index.js", {entry: true})
   .bundle()
   .on("error", function (err) { console.log("Error: " + err.message) })
-  .pipe(acornShimComplete())
+  .pipe(acornShimComplete(null, "walk.js"))
   .pipe(fs.createWriteStream("dist/walk.js"))
 
 babel.transformFile("./src/bin/acorn.js", function (err, result) {

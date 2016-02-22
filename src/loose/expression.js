@@ -209,7 +209,7 @@ lp.parseExprAtom = function() {
 
   case tt.name:
     // quick hack to allow async and await
-    if (this.value == "async" && /^[ \t]*(function\b|\(|\w+[ \t]*=>)/.test(this.input.slice(this.tok.end))) {
+    if (this.tok.value == "async" && /^[ \t]*(function\b|\(|\w+[ \t]*=>)/.test(this.input.slice(this.tok.end))) {
       node = this.startNode();
       this.next();
       return this.parseExprAtom();

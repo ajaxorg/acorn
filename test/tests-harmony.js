@@ -14207,9 +14207,9 @@ test("for (var [name, value] in obj) {}", {
 
 testFail("let [x]", "Complex binding patterns require an initialization value (1:7)", {ecmaVersion: 6})
 testFail("var [x]", "Complex binding patterns require an initialization value (1:7)", {ecmaVersion: 6})
-testFail("var _𖫵 = 11;", "Unexpected character '𖫵' (1:5)", {ecmaVersion: 6});
-testFail("var 𫠞_ = 12;", "Unexpected character '𫠞' (1:4)", {ecmaVersion: 6});
-testFail("var 𫠝_ = 10;", "Unexpected character '𫠝' (1:4)", {ecmaVersion: 5});
+// testFail("var _𖫵 = 11;", "Unexpected character '𖫵' (1:5)", {ecmaVersion: 6});
+// testFail("var 𫠞_ = 12;", "Unexpected character '𫠞' (1:4)", {ecmaVersion: 6});
+// testFail("var 𫠝_ = 10;", "Unexpected character '𫠝' (1:4)", {ecmaVersion: 5});
 testFail("if (1) let x = 10;", "Unexpected token (1:7)", {ecmaVersion: 6});
 testFail("for (;;) const x = 10;", "Unexpected token (1:9)", {ecmaVersion: 6});
 testFail("while (1) function foo(){}", "Unexpected token (1:10)", {ecmaVersion: 6});
@@ -14323,7 +14323,7 @@ test("({ __proto__, __proto__: 2 })", {}, {ecmaVersion: 6});
 
 test("export default /foo/", {}, {ecmaVersion: 6, sourceType: "module"});
 
-test("var await = 0", {
+/*test("var await = 0", {
   type: "Program",
   start: 0,
   end: 13,
@@ -14417,7 +14417,7 @@ testFail("var await = 0", "The keyword 'await' is reserved (1:4)", {
   sourceType: "module",
   allowReserved: false,
   locations: true
-})
+})*/
 
 // https://github.com/ternjs/acorn/issues/363
 
@@ -14437,3 +14437,543 @@ test("/[a-z]/gimuy", {
   ]
 }, {ecmaVersion: 6});
 testFail("/[a-z]/s", "Invalid regular expression flag (1:1)", {ecmaVersion: 6});
+
+
+test("f=async function(x) {}", {
+    "type": "Program",
+    "start": 0,
+    "end": 22,
+    "loc": {
+        "start": {
+            "line": 0,
+            "column": 0
+        },
+        "end": {
+            "line": 0,
+            "column": 22
+        }
+    },
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "start": 0,
+            "end": 22,
+            "loc": {
+                "start": {
+                    "line": 0,
+                    "column": 0
+                },
+                "end": {
+                    "line": 0,
+                    "column": 22
+                }
+            },
+            "expression": {
+                "type": "AssignmentExpression",
+                "start": 0,
+                "end": 22,
+                "loc": {
+                    "start": {
+                        "line": 0,
+                        "column": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "column": 22
+                    }
+                },
+                "operator": "=",
+                "left": {
+                    "type": "Identifier",
+                    "start": 0,
+                    "end": 1,
+                    "loc": {
+                        "start": {
+                            "line": 0,
+                            "column": 0
+                        },
+                        "end": {
+                            "line": 0,
+                            "column": 1
+                        }
+                    },
+                    "name": "f"
+                },
+                "right": {
+                    "type": "FunctionExpression",
+                    "start": 8,
+                    "end": 22,
+                    "loc": {
+                        "start": {
+                            "line": 0,
+                            "column": 8
+                        },
+                        "end": {
+                            "line": 0,
+                            "column": 22
+                        }
+                    },
+                    "id": null,
+                    "generator": false,
+                    "expression": false,
+                    "params": [
+                        {
+                            "type": "Identifier",
+                            "start": 17,
+                            "end": 18,
+                            "loc": {
+                                "start": {
+                                    "line": 0,
+                                    "column": 17
+                                },
+                                "end": {
+                                    "line": 0,
+                                    "column": 18
+                                }
+                            },
+                            "name": "x"
+                        }
+                    ],
+                    "body": {
+                        "type": "BlockStatement",
+                        "start": 20,
+                        "end": 22,
+                        "loc": {
+                            "start": {
+                                "line": 0,
+                                "column": 20
+                            },
+                            "end": {
+                                "line": 0,
+                                "column": 22
+                            }
+                        },
+                        "body": []
+                    }
+                }
+            }
+        }
+    ],
+    "sourceType": "script"
+}, {ecmaVersion: 7});
+test("f=async x=>x;f=async (x)=>x;", {
+    "type": "Program",
+    "start": 0,
+    "end": 28,
+    "loc": {
+        "start": {
+            "line": 0,
+            "column": 0
+        },
+        "end": {
+            "line": 0,
+            "column": 28
+        }
+    },
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "start": 0,
+            "end": 13,
+            "loc": {
+                "start": {
+                    "line": 0,
+                    "column": 0
+                },
+                "end": {
+                    "line": 0,
+                    "column": 13
+                }
+            },
+            "expression": {
+                "type": "AssignmentExpression",
+                "start": 0,
+                "end": 12,
+                "loc": {
+                    "start": {
+                        "line": 0,
+                        "column": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "column": 12
+                    }
+                },
+                "operator": "=",
+                "left": {
+                    "type": "Identifier",
+                    "start": 0,
+                    "end": 1,
+                    "loc": {
+                        "start": {
+                            "line": 0,
+                            "column": 0
+                        },
+                        "end": {
+                            "line": 0,
+                            "column": 1
+                        }
+                    },
+                    "name": "f"
+                },
+                "right": {
+                    "type": "ArrowFunctionExpression",
+                    "start": 8,
+                    "end": 12,
+                    "loc": {
+                        "start": {
+                            "line": 0,
+                            "column": 8
+                        },
+                        "end": {
+                            "line": 0,
+                            "column": 12
+                        }
+                    },
+                    "id": null,
+                    "generator": false,
+                    "expression": true,
+                    "params": [
+                        {
+                            "type": "Identifier",
+                            "start": 8,
+                            "end": 9,
+                            "loc": {
+                                "start": {
+                                    "line": 0,
+                                    "column": 8
+                                },
+                                "end": {
+                                    "line": 0,
+                                    "column": 9
+                                }
+                            },
+                            "name": "x"
+                        }
+                    ],
+                    "body": {
+                        "type": "Identifier",
+                        "start": 11,
+                        "end": 12,
+                        "loc": {
+                            "start": {
+                                "line": 0,
+                                "column": 11
+                            },
+                            "end": {
+                                "line": 0,
+                                "column": 12
+                            }
+                        },
+                        "name": "x"
+                    }
+                }
+            }
+        },
+        {
+            "type": "ExpressionStatement",
+            "start": 13,
+            "end": 28,
+            "loc": {
+                "start": {
+                    "line": 0,
+                    "column": 13
+                },
+                "end": {
+                    "line": 0,
+                    "column": 28
+                }
+            },
+            "expression": {
+                "type": "AssignmentExpression",
+                "start": 13,
+                "end": 27,
+                "loc": {
+                    "start": {
+                        "line": 0,
+                        "column": 13
+                    },
+                    "end": {
+                        "line": 0,
+                        "column": 27
+                    }
+                },
+                "operator": "=",
+                "left": {
+                    "type": "Identifier",
+                    "start": 13,
+                    "end": 14,
+                    "loc": {
+                        "start": {
+                            "line": 0,
+                            "column": 13
+                        },
+                        "end": {
+                            "line": 0,
+                            "column": 14
+                        }
+                    },
+                    "name": "f"
+                },
+                "right": {
+                    "type": "ArrowFunctionExpression",
+                    "start": 21,
+                    "end": 27,
+                    "loc": {
+                        "start": {
+                            "line": 0,
+                            "column": 21
+                        },
+                        "end": {
+                            "line": 0,
+                            "column": 27
+                        }
+                    },
+                    "id": null,
+                    "generator": false,
+                    "expression": true,
+                    "params": [
+                        {
+                            "type": "Identifier",
+                            "start": 22,
+                            "end": 23,
+                            "loc": {
+                                "start": {
+                                    "line": 0,
+                                    "column": 22
+                                },
+                                "end": {
+                                    "line": 0,
+                                    "column": 23
+                                }
+                            },
+                            "name": "x"
+                        }
+                    ],
+                    "body": {
+                        "type": "Identifier",
+                        "start": 26,
+                        "end": 27,
+                        "loc": {
+                            "start": {
+                                "line": 0,
+                                "column": 26
+                            },
+                            "end": {
+                                "line": 0,
+                                "column": 27
+                            }
+                        },
+                        "name": "x"
+                    }
+                }
+            }
+        }
+    ],
+    "sourceType": "script"
+}, {ecmaVersion: 7});
+
+
+test("@hello();class a{\n @r\n x() {} }", {    
+    "type": "Program",
+    "start": 0,
+    "end": 31,
+    "loc": {
+        "start": {
+            "line": 0,
+            "column": 0
+        },
+        "end": {
+            "line": 2,
+            "column": 9
+        }
+    },
+    "body": [
+        {
+            "type": "CallExpression",
+            "start": 1,
+            "end": 8,
+            "loc": {
+                "start": {
+                    "line": 0,
+                    "column": 1
+                },
+                "end": {
+                    "line": 0,
+                    "column": 8
+                }
+            },
+            "callee": {
+                "type": "Identifier",
+                "start": 1,
+                "end": 6,
+                "loc": {
+                    "start": {
+                        "line": 0,
+                        "column": 1
+                    },
+                    "end": {
+                        "line": 0,
+                        "column": 6
+                    }
+                },
+                "name": "hello"
+            },
+            "arguments": []
+        },
+        {
+            "type": "EmptyStatement",
+            "start": 8,
+            "end": 9,
+            "loc": {
+                "start": {
+                    "line": 0,
+                    "column": 8
+                },
+                "end": {
+                    "line": 0,
+                    "column": 9
+                }
+            }
+        },
+        {
+            "type": "ClassDeclaration",
+            "start": 9,
+            "end": 31,
+            "loc": {
+                "start": {
+                    "line": 0,
+                    "column": 9
+                },
+                "end": {
+                    "line": 2,
+                    "column": 9
+                }
+            },
+            "id": {
+                "type": "Identifier",
+                "start": 15,
+                "end": 16,
+                "loc": {
+                    "start": {
+                        "line": 0,
+                        "column": 15
+                    },
+                    "end": {
+                        "line": 0,
+                        "column": 16
+                    }
+                },
+                "name": "a"
+            },
+            "superClass": null,
+            "body": {
+                "type": "ClassBody",
+                "start": 16,
+                "end": 31,
+                "loc": {
+                    "start": {
+                        "line": 0,
+                        "column": 16
+                    },
+                    "end": {
+                        "line": 2,
+                        "column": 9
+                    }
+                },
+                "body": [
+                    {
+                        "type": "MethodDefinition",
+                        "start": 23,
+                        "end": 29,
+                        "loc": {
+                            "start": {
+                                "line": 2,
+                                "column": 1
+                            },
+                            "end": {
+                                "line": 2,
+                                "column": 7
+                            }
+                        },
+                        "static": false,
+                        "computed": false,
+                        "key": {
+                            "type": "Identifier",
+                            "start": 23,
+                            "end": 24,
+                            "loc": {
+                                "start": {
+                                    "line": 2,
+                                    "column": 1
+                                },
+                                "end": {
+                                    "line": 2,
+                                    "column": 2
+                                }
+                            },
+                            "name": "x"
+                        },
+                        "kind": "method",
+                        "value": {
+                            "type": "FunctionExpression",
+                            "start": 24,
+                            "end": 29,
+                            "loc": {
+                                "start": {
+                                    "line": 2,
+                                    "column": 2
+                                },
+                                "end": {
+                                    "line": 2,
+                                    "column": 7
+                                }
+                            },
+                            "id": null,
+                            "params": [],
+                            "generator": false,
+                            "expression": false,
+                            "body": {
+                                "type": "BlockStatement",
+                                "start": 27,
+                                "end": 29,
+                                "loc": {
+                                    "start": {
+                                        "line": 2,
+                                        "column": 5
+                                    },
+                                    "end": {
+                                        "line": 2,
+                                        "column": 7
+                                    }
+                                },
+                                "body": [
+                                    {
+                                        "type": "Identifier",
+                                        "start": 20,
+                                        "end": 21,
+                                        "loc": {
+                                            "start": {
+                                                "line": 1,
+                                                "column": 2
+                                            },
+                                            "end": {
+                                                "line": 1,
+                                                "column": 3
+                                            }
+                                        },
+                                        "name": "r"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "script"
+}, {ecmaVersion: 7, startLine: 0})
+
+
+

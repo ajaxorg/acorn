@@ -275,6 +275,7 @@ pp.parseExprAtom = function(refDestructuringErrors) {
     if (this.value == "async" && /^[ \t]*(function\b|\(|\w+[ \t]*=>)/.test(this.input.slice(this.end))) {
       node = this.startNode();
       this.next();
+      this.potentialArrowAt = this.start;
       return this.parseExprAtom(refDestructuringErrors);
     }    
     if (this.value == "await" && /^[ \t]+[\w\x1f-\uffff]/.test(this.input.slice(this.end))) {

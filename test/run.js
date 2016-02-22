@@ -47,7 +47,7 @@
       elem.innerHTML = "<b>" + title + "</b> " + message;
       htmlGroup.appendChild(elem);
     }
-    if (typeof console === "object") console.log(title, message);
+    if (typeof console === "object") console.log(title, "<<>>", message);
   }
 
   var stats, modes = {
@@ -80,6 +80,7 @@
     var mode = modes[name];
     stats = mode.stats = {testsRun: 0, failed: 0};
     var t0 = +new Date;
+    console.log(mode.config.parse.name)
     driver.runTests(mode.config, report);
     mode.stats.duration = +new Date - t0;
     groupEnd();
