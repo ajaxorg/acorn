@@ -342,6 +342,78 @@ test("a-- ** 2", {
   "sourceType": "script"
 }, {ecmaVersion: 7})
 
+test("class x {\n\
+ async x() {}\n\
+ y = 1\n\
+ static z\n\
+}", {
+    "type": "Program",
+    "body": [
+        {
+            "type": "ClassDeclaration",
+            "id": {
+                "type": "Identifier",
+                "name": "x"
+            },
+            "superClass": null,
+            "body": {
+                "type": "ClassBody",
+                "body": [
+                    {
+                        "type": "MethodDefinition",
+                        "computed": false,
+                        "key": {
+                            "type": "Identifier",
+                            "name": "x"
+                        },
+                        "static": false,
+                        "kind": "method",
+                        "value": {
+                            "type": "FunctionExpression",
+                            "id": null,
+                            "generator": false,
+                            "expression": false,
+                            "params": [],
+                            "body": {
+                                "type": "BlockStatement",
+                                "body": []
+                            }
+                        }
+                    },
+                    {
+                        "type": "Property",
+                        "computed": false,
+                        "key": {
+                            "type": "Identifier",
+                            "name": "y"
+                        },
+                        "static": false,
+                        "value": {
+                            "type": "Literal",
+                            "value": 1,
+                            "raw": "1"
+                        }
+                    },
+                    {
+                        "type": "Property",
+                        "computed": false,
+                        "key": {
+                            "type": "Identifier",
+                            "name": "z"
+                        },
+                        "static": true,
+                        "value": {
+                            "type": "BlockStatement",
+                            "body": []
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "script"
+}, {ecmaVersion: 8})
+
 testFail("x %* y", "Unexpected token (1:3)", { ecmaVersion: 7 });
 
 testFail("x %*= y", "Unexpected token (1:3)", { ecmaVersion: 7 });

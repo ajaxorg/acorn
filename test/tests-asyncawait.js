@@ -1510,9 +1510,9 @@ test("class A {static* async() { }}", {
     "sourceType": "script"
 }, {ecmaVersion: 8})
 
-// invalid syntax if there is a linebreak after 'async'.
-testFail("class A {async\nfoo() { }}", "Unexpected token (2:0)", {ecmaVersion: 8})
-testFail("class A {static async\nfoo() { }}", "Unexpected token (2:0)", {ecmaVersion: 8})
+// invalid syntax if there is a linebreak after 'async'. conflicts with property named async
+// testFail("class A {async\nfoo() { }}", "Unexpected token (2:0)", {ecmaVersion: 8})
+// testFail("class A {static async\nfoo() { }}", "Unexpected token (2:0)", {ecmaVersion: 8})
 
 // cannot combine with constructors/getters/setters/generators.
 testFail("class A {async constructor() { }}", "Constructor can't be an async method (1:15)", {ecmaVersion: 8})

@@ -288,14 +288,29 @@ lp.parseClass = function(isStatement) {
       this.parsePropertyName(method)
     } else {
       method.static = false
+    }     
+    if (this.tok.type == tt.eq) {
+      this.next()
+      method.value = this.parseExpression()
     }
-    if (!method.computed &&
+    else if (!method.computed &&
         method.key.type === "Identifier" && method.key.name === "async" && this.tok.type !== tt.parenL &&
         !this.canInsertSemicolon()) {
       this.parsePropertyName(method)
       isAsync = true
     } else {
       isAsync = false
+
+      if (!method.value && this.tok.type == tt.semi || this.canInsertSemicolon()) {
+        if (this.tok.type == tt.semi) this.next();
+        var _node = this.startNode();
+        _node.body = [];
+        method.value = this.finishNode(_node, "BlockStatement");
+      }
+    }
+    if (method.value) {
+      node.body.body.push(this.finishNode(method, "Property"))
+      continue
     }
     if (this.options.ecmaVersion >= 5 && method.key.type === "Identifier" &&
         !method.computed && (method.key.name === "get" || method.key.name === "set") &&

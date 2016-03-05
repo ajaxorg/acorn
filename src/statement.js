@@ -569,6 +569,23 @@ pp.parseClass = function(node, isStatement) {
         this.raise(key.start, "Classes may not have a static property named prototype")
       }
     }
+    
+    if (this.type == tt.eq) {
+      this.next()
+      method.value = this.parseExpression()
+    }
+    else if (this.type == tt.semi || this.canInsertSemicolon()) {
+      if (this.type == tt.semi)
+        this.next()
+      let node = this.startNode()
+      node.body = []
+      method.value = this.finishNode(node, "BlockStatement")
+    }    
+    if (method.value) {
+      classBody.body.push(this.finishNode(method, "Property"))
+      continue
+    }
+    
     this.parseClassMethod(classBody, method, isGenerator, isAsync)
     if (decorators.length) {
       var body = method.value.body.body;
