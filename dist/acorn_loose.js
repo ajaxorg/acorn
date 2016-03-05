@@ -290,6 +290,14 @@ lp.parseExprAtom = function () {
     case _.tokTypes.backQuote:
       return this.parseTemplate();
 
+    case _.tokTypes._do:
+      this.next();
+      return this.parseStatement();
+    case _.tokTypes.at:
+      this.next();
+      this.parseExprAtom();
+      return this.parseExprAtom();
+
     default:
       return this.dummyIdent();
   }
@@ -1066,6 +1074,7 @@ lp.parseClass = function (isStatement) {
       decorators.push(expr);
       continue;
     }
+    if (this.tok.value == "async" && /^[ \t]*\w+/.test(this.input.slice(this.tok.end))) this.next();
     var method = this.startNode(),
         isGenerator = undefined;
     if (this.options.ecmaVersion >= 6) {
@@ -1082,6 +1091,19 @@ lp.parseClass = function (isStatement) {
       this.parsePropertyName(method);
     } else {
       method["static"] = false;
+    }
+    if (this.tok.type == _.tokTypes.eq) {
+      this.next();
+      method.value = this.parseExpression();
+    } else if (this.tok.type == _.tokTypes.semi || this.canInsertSemicolon()) {
+      if (this.tok.type == _.tokTypes.semi) this.next();
+      var _node = this.startNode();
+      _node.body = [];
+      method.value = this.finishNode(_node, "BlockStatement");
+    }
+    if (method.value) {
+      node.body.body.push(this.finishNode(method, "Property"));
+      continue;
     }
     if (this.options.ecmaVersion >= 5 && method.key.type === "Identifier" && !method.computed && (method.key.name === "get" || method.key.name === "set") && this.tok.type !== _.tokTypes.parenL && this.tok.type !== _.tokTypes.braceL) {
       method.kind = method.key.name;

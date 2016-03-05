@@ -268,6 +268,8 @@ lp.parseClass = function(isStatement) {
         decorators.push(expr);
         continue;
     }
+    if (this.tok.value == "async" && /^[ \t]*\w+/.test(this.input.slice(this.tok.end)))
+      this.next()
     let method = this.startNode(), isGenerator
     if (this.options.ecmaVersion >= 6) {
       method.static = false
@@ -282,6 +284,21 @@ lp.parseClass = function(isStatement) {
       this.parsePropertyName(method)
     } else {
       method.static = false
+    }     
+    if (this.tok.type == tt.eq) {
+      this.next()
+      method.value = this.parseExpression()
+    }
+    else if (this.tok.type == tt.semi || this.canInsertSemicolon()) {
+      if (this.tok.type == tt.semi)
+        this.next()
+      let node = this.startNode()
+      node.body = []
+      method.value = this.finishNode(node, "BlockStatement")
+    }
+    if (method.value) {
+      node.body.body.push(this.finishNode(method, "Property"))
+      continue
     }
     if (this.options.ecmaVersion >= 5 && method.key.type === "Identifier" &&
         !method.computed && (method.key.name === "get" || method.key.name === "set") &&

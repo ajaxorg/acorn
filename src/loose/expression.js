@@ -282,7 +282,15 @@ lp.parseExprAtom = function() {
 
   case tt.backQuote:
     return this.parseTemplate()
-
+    
+  case tt._do:
+    this.next()
+    return this.parseStatement()
+  case tt.at:
+    this.next()
+    this.parseExprAtom()
+    return this.parseExprAtom();
+    
   default:
     return this.dummyIdent()
   }

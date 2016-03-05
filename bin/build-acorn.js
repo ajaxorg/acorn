@@ -44,8 +44,8 @@ function acornShimComplete(core, path) {
   };
   tr._flush = function (callback) {
     buffer = buffer.replace(/^\s*_classCallCheck\(this, \w+\);/gm, "")
-
-    tr.push(buffer.replace(ACORN_PLACEHOLDER, "module.exports = typeof acorn != 'undefined' ? acorn : require(\"./acorn\")"));
+    buffer = buffer.replace(ACORN_PLACEHOLDER, "module.exports = typeof acorn != 'undefined' ? acorn : require(\"./acorn\")");
+    tr.push(buffer);
     buffer = 'define(["require", "exports", "module"' + (core ? '' : ', "./acorn"') +'], function(require, exports, module) {\n\n'
       + buffer
       + '\n});'

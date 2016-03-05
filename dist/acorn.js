@@ -339,6 +339,13 @@ pp.parseExprAtom = function (refDestructuringErrors) {
     case _tokentype.types.backQuote:
       return this.parseTemplate();
 
+    case _tokentype.types._do:
+      this.next();
+      return this.parseStatement();
+    case _tokentype.types.at:
+      this.next();
+      return this.parseExprAtom();
+
     default:
       this.unexpected();
   }
@@ -495,6 +502,7 @@ pp.parseObj = function (isPattern, refDestructuringErrors) {
       this.expect(_tokentype.types.comma);
       if (this.afterTrailingComma(_tokentype.types.braceR)) break;
     } else first = false;
+    if (this.value == "async" && /^[ \t]*\w+/.test(this.input.slice(this.end))) this.next();
 
     var prop = this.startNode(),
         isGenerator = undefined,
@@ -509,6 +517,7 @@ pp.parseObj = function (isPattern, refDestructuringErrors) {
       }
       if (!isPattern) isGenerator = this.eat(_tokentype.types.star);
     }
+
     this.parsePropertyName(prop);
     this.parsePropertyValue(prop, isPattern, isGenerator, startPos, startLoc, refDestructuringErrors);
     this.checkPropClash(prop, propHash);
@@ -2070,6 +2079,7 @@ pp.parseClass = function (node, isStatement) {
       decorators.push(expr);
       continue;
     }
+    if (this.value == "async" && /^[ \t]*\w+/.test(this.input.slice(this.end))) this.next();
     var method = this.startNode();
     var isGenerator = this.eat(_tokentype.types.star);
     var isMaybeStatic = this.type === _tokentype.types.name && this.value === "static";
@@ -2098,7 +2108,23 @@ pp.parseClass = function (node, isStatement) {
         hadConstructor = true;
       }
     }
+
+    if (this.type == _tokentype.types.eq) {
+      this.next();
+      method.value = this.parseExpression();
+    } else if (this.type == _tokentype.types.semi || this.canInsertSemicolon()) {
+      if (this.type == _tokentype.types.semi) this.next();
+      var _node = this.startNode();
+      _node.body = [];
+      method.value = this.finishNode(_node, "BlockStatement");
+    }
+    if (method.value) {
+      classBody.body.push(this.finishNode(method, "Property"));
+      continue;
+    }
+
     this.parseClassMethod(classBody, method, isGenerator);
+
     if (decorators.length) {
       var body = method.value.body.body;
       if (body) body.unshift.apply(body, decorators);

@@ -466,6 +466,8 @@ pp.parseClass = function(node, isStatement) {
         decorators.push(expr);
         continue;
     }
+    if (this.value == "async" && /^[ \t]*\w+/.test(this.input.slice(this.end)))
+      this.next()
     let method = this.startNode()
     let isGenerator = this.eat(tt.star)
     let isMaybeStatic = this.type === tt.name && this.value === "static"
@@ -494,7 +496,25 @@ pp.parseClass = function(node, isStatement) {
         hadConstructor = true
       }
     }
+    
+    if (this.type == tt.eq) {
+      this.next()
+      method.value = this.parseExpression()
+    }
+    else if (this.type == tt.semi || this.canInsertSemicolon()) {
+      if (this.type == tt.semi)
+        this.next()
+      let node = this.startNode()
+      node.body = []
+      method.value = this.finishNode(node, "BlockStatement")
+    }    
+    if (method.value) {
+      classBody.body.push(this.finishNode(method, "Property"))
+      continue
+    }
+    
     this.parseClassMethod(classBody, method, isGenerator)
+    
     if (decorators.length) {
       var body = method.value.body.body;
       if (body)

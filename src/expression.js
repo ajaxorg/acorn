@@ -331,6 +331,13 @@ pp.parseExprAtom = function(refDestructuringErrors) {
 
   case tt.backQuote:
     return this.parseTemplate()
+    
+  case tt._do:
+    this.next()
+    return this.parseStatement()
+  case tt.at:
+    this.next()
+    return this.parseExprAtom()
 
   default:
     this.unexpected()
@@ -481,7 +488,9 @@ pp.parseObj = function(isPattern, refDestructuringErrors) {
       this.expect(tt.comma)
       if (this.afterTrailingComma(tt.braceR)) break
     } else first = false
-
+    if (this.value == "async" && /^[ \t]*\w+/.test(this.input.slice(this.end)))
+        this.next()
+    
     let prop = this.startNode(), isGenerator, startPos, startLoc
     if (this.options.ecmaVersion >= 6) {
       prop.method = false
@@ -493,6 +502,7 @@ pp.parseObj = function(isPattern, refDestructuringErrors) {
       if (!isPattern)
         isGenerator = this.eat(tt.star)
     }
+     
     this.parsePropertyName(prop)
     this.parsePropertyValue(prop, isPattern, isGenerator, startPos, startLoc, refDestructuringErrors)
     this.checkPropClash(prop, propHash)

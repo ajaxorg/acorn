@@ -74,8 +74,10 @@
             testOpts[name] = expected[name];
           }
         }
-        if (mis) 
+        if (mis) {
           console.log(JSON.stringify(ast, null, 4))
+          // copy(JSON.stringify(ast, function(x, y) { if (!/^(start|end|loc)$/.test(x)) return y }, 4))
+        }
         if (mis) callback("fail", test.code, mis);
         else callback("ok", test.code);
       }
