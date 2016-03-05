@@ -378,6 +378,13 @@ pp.parseExprAtom = function(refDestructuringErrors) {
 
   case tt.backQuote:
     return this.parseTemplate()
+    
+  case tt._do:
+    this.next()
+    return this.parseStatement()
+  case tt.at:
+    this.next()
+    return this.parseExprAtom()
 
   default:
     this.unexpected()
