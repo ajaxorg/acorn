@@ -14738,6 +14738,12 @@ test("/[a-z]/gimuy", {
 }, {ecmaVersion: 6});
 testFail("/[a-z]/s", "Invalid regular expression flag (1:1)", {ecmaVersion: 6});
 
+
+test("@hello();class a{\n @r\n x() {} }", 
+{"type":"Program","start":0,"end":31,"body":[{"type":"CallExpression","start":1,"end":8,"callee":{"type":"Identifier","start":1,"end":6,"name":"hello"},"arguments":[]},{"type":"EmptyStatement","start":8,"end":9},{"type":"ClassDeclaration","start":9,"end":31,"id":{"type":"Identifier","start":15,"end":16,"name":"a"},"superClass":null,"body":{"type":"ClassBody","start":16,"end":31,"body":[{"type":"MethodDefinition","start":23,"end":29,"computed":false,"key":{"type":"Identifier","start":23,"end":24,"name":"x"},"static":false,"kind":"method","value":{"type":"FunctionExpression","start":24,"end":29,"id":null,"generator":false,"expression":false,"params":[],"body":{"type":"BlockStatement","start":27,"end":29,"body":[{"type":"Identifier","start":20,"end":21,"name":"r"}]}}}]}}],"sourceType":"script"}
+, {ecmaVersion: 7, startLine: 0})
+
+
 testFail("[...x in y] = []", "Assigning to rvalue (1:4)", {ecmaVersion: 6});
 
 testFail("export let x = a; export function x() {}", "Identifier 'x' has already been declared (1:34)", {ecmaVersion: 6, sourceType: "module"})

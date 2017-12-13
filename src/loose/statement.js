@@ -170,6 +170,9 @@ lp.parseStatement = function() {
 
   case tt._export:
     return this.parseExport()
+  case tt.at:
+    this.next()
+    return this.parseExpression()
 
   default:
     if (this.toks.isAsyncFunction()) {
@@ -261,9 +264,16 @@ lp.parseClass = function(isStatement) {
   this.pushCx()
   let indent = this.curIndent + 1, line = this.curLineStart
   this.eat(tt.braceL)
+  var decorators = []
   if (this.curIndent + 1 < indent) { indent = this.curIndent; line = this.curLineStart }
   while (!this.closes(tt.braceR, indent, line)) {
     if (this.semicolon()) continue
+    if (this.tok.type == tt.at) {
+        this.next();
+        var expr = this.parseMaybeAssign(true);
+        decorators.push(expr);
+        continue;
+    }
     let method = this.startNode(), isGenerator, isAsync
     if (this.options.ecmaVersion >= 6) {
       method.static = false
@@ -302,6 +312,13 @@ lp.parseClass = function(isStatement) {
         method.kind = "method"
       }
       method.value = this.parseMethod(isGenerator, isAsync)
+    }
+    
+    if (decorators.length) {
+      var body = method.value.body.body;
+      if (body)
+        body.unshift.apply(body, decorators);
+      decorators = []
     }
     node.body.body.push(this.finishNode(method, "MethodDefinition"))
   }

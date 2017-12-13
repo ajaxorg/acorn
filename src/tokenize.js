@@ -358,6 +358,8 @@ pp.getTokenFromCode = function(code) {
 
   case 126: // '~'
     return this.finishOp(tt.prefix, 1)
+  case 64: // '@'
+    ++this.pos;return this.finishToken(tt.at)
   }
 
   this.raise(this.pos, "Unexpected character '" + codePointToString(code) + "'")
