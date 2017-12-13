@@ -414,6 +414,74 @@ test("class x {\n\
     "sourceType": "script"
 }, {ecmaVersion: 8})
 
+test("x::y();", 
+{
+    "type": "Program",
+    "start": 0,
+    "end": 7,
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "start": 0,
+            "end": 7,
+            "expression": {
+                "type": "SequenceExpression",
+                "start": 0,
+                "end": 6,
+                "expressions": [
+                    {
+                        "type": "Identifier",
+                        "start": 0,
+                        "end": 1,
+                        "name": "x"
+                    },
+                    {
+                        "type": "CallExpression",
+                        "start": 3,
+                        "end": 6,
+                        "callee": {
+                            "type": "Identifier",
+                            "start": 3,
+                            "end": 4,
+                            "name": "y"
+                        },
+                        "arguments": []
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "script"
+},
+{ecmaVersion: 8})
+test("::y();", 
+{
+    "type": "Program",
+    "start": 0,
+    "end": 6,
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "start": 0,
+            "end": 6,
+            "expression": {
+                "type": "CallExpression",
+                "start": 2,
+                "end": 5,
+                "callee": {
+                    "type": "Identifier",
+                    "start": 2,
+                    "end": 3,
+                    "name": "y"
+                },
+                "arguments": []
+            }
+        }
+    ],
+    "sourceType": "script"
+},
+{ecmaVersion: 8})
+
 testFail("x %* y", "Unexpected token (1:3)", { ecmaVersion: 7 });
 
 testFail("x %*= y", "Unexpected token (1:3)", { ecmaVersion: 7 });

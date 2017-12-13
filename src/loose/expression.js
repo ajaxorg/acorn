@@ -199,6 +199,14 @@ lp.parseSubscripts = function(base, start, noCalls, startIndent, line) {
       node.tag = base
       node.quasi = this.parseTemplate()
       base = this.finishNode(node, "TaggedTemplateExpression")
+    } else if (this.tok.type == tt.colon && this.input[this.tok.end] == ":") {
+      this.next();
+      this.next();
+      var node = this.startNodeAt(start);
+      node.expressions = [base];
+      var e2 = this.parseExpression();
+      node.expressions.push(e2);
+      base = this.finishNode(node, "SequenceExpression");
     } else {
       return base
     }
@@ -300,6 +308,12 @@ lp.parseExprAtom = function() {
     this.next()
     this.parseExprAtom()
     return this.parseExprAtom();
+   case tt.colon:
+    if (this.input[this.tok.end] == ":") {
+      this.next();
+      this.next();
+      return this.parseExprSubscripts();
+    }
     
   default:
     return this.dummyIdent()

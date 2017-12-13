@@ -279,6 +279,14 @@ pp.parseSubscripts = function(base, startPos, startLoc, noCalls) {
       node.tag = base
       node.quasi = this.parseTemplate({isTagged: true})
       base = this.finishNode(node, "TaggedTemplateExpression")
+    } else if (this.type == tt.colon && this.input[this.end] == ":" && this.options.ecmaVersion >= 7) {
+      this.next();
+      this.next();
+      var node = this.startNodeAt(startPos, startLoc);
+      node.expressions = [base];
+      var e2 = this.parseExpression();
+      node.expressions.push(e2);
+      base = this.finishNode(node, "SequenceExpression");
     } else {
       return base
     }
@@ -385,6 +393,13 @@ pp.parseExprAtom = function(refDestructuringErrors) {
   case tt.at:
     this.next()
     return this.parseExprAtom()
+  case tt.colon:
+      if (this.input[this.end] == ":") {
+         this.next();
+         this.next();
+         return this.parseExprSubscripts(refDestructuringErrors);
+      }
+
 
   default:
     this.unexpected()
